@@ -13,12 +13,14 @@ class Unpack:
     for pkt in cap:
       try:
         if pkt[TCP].sport == 443:
-          ip_total_len = pkt.getlayer(IP).len
-          ip_header_len = pkt.getlayer(IP).ihl * 32 / 8
-          tcp_header_len = pkt.getlayer(TCP).dataofs * 32 / 8
-          tcp_seg_len = ip_total_len - ip_header_len - tcp_header_len
-          if tcp_seg_len > 0:
-            captured.append(pkt)
+          # some packets incomplete captured or corrupted
+          if len(pkt[TCP].options) != 0:
+            ip_total_len = pkt.getlayer(IP).len
+            ip_header_len = pkt.getlayer(IP).ihl * 32 / 8
+            tcp_header_len = pkt.getlayer(TCP).dataofs * 32 / 8
+            tcp_seg_len = ip_total_len - ip_header_len - tcp_header_len
+            if tcp_seg_len > 0:
+              captured.append(pkt)
       except:
         pass
 
