@@ -25,7 +25,7 @@ class Unpack:
         pass
 
     # Sort packets based on time they came
-    captured.sort(key=lambda x: x[TCP].options[2][1][0])
+    captured.sort(key=lambda x: x.time)
 
     # Make an array of the lengths of the data
     self.arr = []
@@ -55,7 +55,10 @@ class Unpack:
     # Now lets plot the graph
     plt.figure(figsize=(20,10))
     plt.plot(self.timearr, self.arr)
-    plt.xlabel('packet sequence')
-    plt.ylabel('length of each packet (megabytes)')
+    plt.xlabel('Packet sequence')
+    plt.ylabel('Length of each packet')
     plt.title('Video fingerprint')
     plt.show()
+  
+  def bitrateplot(self):
+    pass
