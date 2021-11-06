@@ -3,8 +3,11 @@ from scapy.all import *
 
 class Unpack:
   def __init__(self, filename):
+    self.pcapfilename = filename
     # Read the pcap file
     cap = rdpcap(filename)
+
+    port = 80
 
     # Create new object for storing only TCP packets
     captured = scapy.plist.PacketList()
@@ -12,15 +15,13 @@ class Unpack:
     # Filter TCP from rest
     for pkt in cap:
       try:
-        if pkt[TCP].sport == 443:
-          # some packets incomplete captured or corrupted
-          if len(pkt[TCP].options) != 0:
-            ip_total_len = pkt.getlayer(IP).len
-            ip_header_len = pkt.getlayer(IP).ihl * 32 / 8
-            tcp_header_len = pkt.getlayer(TCP).dataofs * 32 / 8
-            tcp_seg_len = ip_total_len - ip_header_len - tcp_header_len
-            if tcp_seg_len > 0:
-              captured.append(pkt)
+        # if pkt[TCP].sport == port:
+        ip_total_len = pkt.getlayer(IP).len
+        ip_header_len = pkt.getlayer(IP).ihl * 32 / 8
+        tcp_header_len = pkt.getlayer(TCP).dataofs * 32 / 8
+        tcp_seg_len = ip_total_len - ip_header_len - tcp_header_len
+        if tcp_seg_len > 0:
+          captured.append(pkt)
       except:
         pass
 
@@ -31,12 +32,12 @@ class Unpack:
     self.arr = []
     for pkt in captured:
       try:
-        if pkt[TCP].sport == 443:
-          ip_total_len = pkt.getlayer(IP).len
-          ip_header_len = pkt.getlayer(IP).ihl * 32 / 8
-          tcp_header_len = pkt.getlayer(TCP).dataofs * 32 / 8
-          tcp_seg_len = ip_total_len - ip_header_len - tcp_header_len
-          self.arr.append(tcp_seg_len)
+        # if pkt[TCP].sport == port:
+        ip_total_len = pkt.getlayer(IP).len
+        ip_header_len = pkt.getlayer(IP).ihl * 32 / 8
+        tcp_header_len = pkt.getlayer(TCP).dataofs * 32 / 8
+        tcp_seg_len = ip_total_len - ip_header_len - tcp_header_len
+        self.arr.append(tcp_seg_len)
       except:
         pass
     # print(len(self.arr))
@@ -57,7 +58,7 @@ class Unpack:
     plt.plot(self.timearr, self.arr)
     plt.xlabel('Packet sequence')
     plt.ylabel('Length of each packet')
-    plt.title('Video fingerprint')
+    plt.title('Video fingerprint for ' + self.pcapfilename)
     plt.show()
   
   def bitrateplot(self):

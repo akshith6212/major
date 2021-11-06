@@ -2,11 +2,12 @@ import math
 import scapy
 from scapy.all import *
 from data import Unpack
+from pcap import *
 
 def main():
-  result0 = Unpack('capture_stanford-0.pcap')
+  result0 = Unpack('pcap/gv 720p-1.pcap')
   arr0 = result0.getarray()
-  result1 = Unpack('capture_stanford-1.pcap')
+  result1 = Unpack('pcap/gv 720p-2.pcap')
   arr1 = result1.getarray()
 
   n0 = len(arr0)
@@ -23,51 +24,36 @@ def main():
 
   # store the sampled values in arr
   arr = []
-  if(n0 > n1):
-    for i in range(min(n0,n1)):
-      arr.append(arr0[indices[i]])
-    # print(len(arr))
 
-    diff = 0
-    for i in range(min(n0,n1)):
-      diff += abs(arr[i]-arr1[i])
+  # swap arrays
+  if(n0 < n1):
+    arr0 = result1.getarray()
+    arr1 = result0.getarray()
 
-    print("Absolute difference  :", int(diff))
+  # sample the long sized array
+  for i in range(min(n0,n1)):
+    arr.append(arr0[indices[i]])
+  # print(len(arr))
 
-    sum0 = 0
-    sum1 = 0
-    for i in arr:
-      sum0 += i
-    for i in arr1:
-      sum1 += i
+  diff = 0
+  for i in range(min(n0,n1)):
+    diff += abs(arr[i]-arr1[i])
 
-    avg = (sum0+sum1)/2
+  print("Absolute difference  :", int(diff))
 
-    percentage_similarity = ((avg - diff)/avg)*100
+  sum0 = 0
+  sum1 = 0
+  for i in arr:
+    sum0 += i
+  for i in arr1:
+    sum1 += i
 
-    print("Percentage similarity:", round(percentage_similarity, 2),"%")
+  avg = (sum0+sum1)/2
+
+  # print(sum0, sum1, avg)
+
+  percentage_similarity = ((avg - diff)/avg)*100
+
+  print("Percentage similarity:", round(percentage_similarity, 2),"%")
   
-  else:
-    for i in range(min(n0,n1)):
-      arr.append(arr1[indices[i]])
-    # print(len(arr))
-
-    diff = 0
-    for i in range(min(n0,n1)):
-      diff += abs(arr[i]-arr0[i])
-    print("Absolute difference  :", int(diff))
-
-    sum0 = 0
-    sum1 = 0
-    for i in arr:
-      sum0 += i
-    for i in arr0:
-      sum1 += i
-
-    avg = (sum0+sum1)/2
-
-    percentage_similarity = ((avg - diff)/avg)*100
-
-    print("Percentage similarity:", round(percentage_similarity, 2),"%")
-
 main()
