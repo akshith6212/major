@@ -1,3 +1,6 @@
 __pycache__
 *.pcap
 # *.csv
+/png
+/txt
+/pcap

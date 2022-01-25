@@ -1,58 +1,77 @@
-import csv
-import numpy as np
+from itertools import groupby
 import matplotlib.pyplot as plt
 
-start_time = 0.0
-tick = 1
-# end_time = 929.001173
-end_time = 875.284629
-protocol = 'TCP'
+d0 = open('data-stanford0.txt')
+data = ([float(x) for x in line.split()] for line in d0)
+Dict = {}
+for i_time,packet_info in groupby(data,key=lambda x:int(x[0])):
+  # print(i_time, sum(x[1] for x in packet_info))
+  Dict[i_time] = sum(x[1] for x in packet_info)
 
-# open csv file
-with open('stanford-0.csv', newline='') as csvfile:
-  reader = csv.reader(csvfile, delimiter=',', quotechar='"')
-  packets = [(float(packet[1]), int(packet[5])) for packet in reader if packet[4] == protocol and packet[2] == "192.168.43.6"]
 
-mapped_packets_based_on_time = []
-time = []
-start = 0
-end = end_time - start_time
-packets_size = 0.0
-i = 0
+Dict_items = sorted(Dict.items(), key = lambda kv: kv[0])
+timearr = []
+bitrate = []
 
-# get packet sizes
-while start <= end:
-  while i < len(packets) and packets[i][0] <= start + start_time + tick:
-    packets_size += packets[i][1] - 18 - 20 - 20
-    i += 1
+for i in Dict_items:
+  timearr.append(i[0])
+  bitrate.append(i[1])
 
-  time.append(start)
-  mapped_packets_based_on_time.append(packets_size * 8)
-  packets_size = 0.0
-  start += tick
+d1 = open('data-stanford1.txt')
+data1 = ([float(x) for x in line.split()] for line in d1)
+Dict1 = {}
+for i_time,packet_info in groupby(data1,key=lambda x:int(x[0])):
+  # print(i_time, sum(x[1] for x in packet_info))
+  Dict1[i_time] = sum(x[1] for x in packet_info)
+  
+  
+Dict_items1 = sorted(Dict1.items(), key = lambda kv: kv[0])
+timearr1 = []
+bitrate1 = []
 
-# 
-while mapped_packets_based_on_time[-1] == 0.0:
-  mapped_packets_based_on_time.pop()
-  time.pop()
+for i in Dict_items1:
+  timearr1.append(i[0])
+  bitrate1.append(i[1])
 
-fig = plt.figure()
-fig.suptitle('HLS Bit-rate', fontsize=18, fontweight='bold')
+d2 = open('data-levitating0.txt')
+data2 = ([float(x) for x in line.split()] for line in d2)
+Dict2 = {}
+for i_time,packet_info in groupby(data2,key=lambda x:int(x[0])):
+  # print(i_time, sum(x[1] for x in packet_info))
+  Dict2[i_time] = sum(x[1] for x in packet_info)
+  
+  
+Dict_items2 = sorted(Dict2.items(), key = lambda kv: kv[0])
+timearr2 = []
+bitrate2 = []
 
-ax = fig.add_subplot(111)
-ax.set_xlabel('Time')
-ax.set_ylabel('Bit-rate')
+for i in Dict_items2:
+  timearr2.append(i[0])
+  bitrate2.append(i[1])
 
-time = np.array(time)
-mapped_packets_based_on_time = np.array(mapped_packets_based_on_time)
-mean = np.mean(mapped_packets_based_on_time)
-standard_deviation = np.std(mapped_packets_based_on_time)
+d3 = open('data-levitating1.txt')
+data3 = ([float(x) for x in line.split()] for line in d3)
+Dict3 = {}
+for i_time,packet_info in groupby(data3,key=lambda x:int(x[0])):
+  # print(i_time, sum(x[1] for x in packet_info))
+  Dict3[i_time] = sum(x[1] for x in packet_info)
+  
+  
+Dict_items3 = sorted(Dict3.items(), key = lambda kv: kv[0])
+timearr3 = []
+bitrate3 = []
 
-ax.plot(time, mapped_packets_based_on_time, linewidth=1.5, label="Bit-rate")
+for i in Dict_items3:
+  timearr3.append(i[0])
+  bitrate3.append(i[1])
 
-ax.axhline(y=mean,color='r',ls='dashed', label="Mean Bit-rate")
-ax.legend(loc='upper center')
-ax.text(0.21, 0.74, 'Mean = %.3f bps' % mean, color='red', fontsize=15, transform=ax.transAxes)
-ax.text(0.17, 0.71, 'Standard deviation = %.3f bps' % standard_deviation, color='green', fontsize=15, transform=ax.transAxes)
-
+plt.figure(figsize=(20,10))
+plt.plot(timearr, bitrate, linestyle='--', marker='o', color='r', label='stanford0')
+# plt.plot(timearr1, bitrate1, linestyle='--', marker='o', color='g', label='stanford1')
+plt.plot(timearr2, bitrate2, linestyle='--', marker='o', color='m', label='levitating0')
+plt.plot(timearr3, bitrate3, linestyle='--', marker='o', color='y', label='levitating1')
+plt.xlabel('time')
+plt.ylabel('Bitrate')
+plt.title('Bitrate vs time plot')
+plt.legend()
 plt.show()
