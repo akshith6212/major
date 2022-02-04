@@ -53,13 +53,28 @@ class Unpack:
 
     temp = 0
     cnt = 0
-    for i in self.arr:
+    n = len(self.arr)
+    for i in range(n):
       cnt += 1
-      temp += i
-      if chunk-temp <= 0.1*mul*whole:
-        self.packets.append(cnt)
-        # cnt = 0
-        temp = 0
+      temp += self.arr[i]
+      if temp-chunk > 0:
+        self.packets.append((cnt,i))
+        d = int(temp/chunk)
+        
+        temp -= d*chunk
+        if(temp != 0):
+          cnt = 1
+        else:
+          cnt = 0
+
+        if(d > 1):
+          d -= 1
+          for j in range(d):
+            self.packets.append((1,i))
+      
+      if(i == n-1):
+        if(temp != 0):
+          self.packets.append((cnt,i))
 
     self.timearr = []
     for i in range(0, len(self.packets)):
@@ -82,3 +97,8 @@ class Unpack:
   
   def bitrateplot(self):
     pass
+
+
+
+
+      # if chunk-temp <= 0.1*mul*whole:
