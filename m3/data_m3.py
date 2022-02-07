@@ -44,21 +44,21 @@ class Unpack:
 
     whole = 0
     for i in self.arr:
-      whole += i
+      whole += i[0]
 
-    mul = 0.01
+    self.mul = 0.01
 
-    chunk = whole*mul
-    self.packets = []
+    chunk = whole*self.mul
+    self.timetakenarr = []
 
     temp = 0
     time_taken = 0
     n = len(self.arr)
-    for i in range(n):
-      time_taken += 1
-      temp += self.arr[i]
+    for i in range(1,n):
+      time_taken += self.arr[i][1]-self.arr[i-1][1]
+      temp += self.arr[i][0]
       if temp-chunk > 0:
-        self.packets.append(time_taken)
+        self.timetakenarr.append(time_taken) 
         d = int(temp/chunk)
         
         temp -= d*chunk
@@ -70,26 +70,26 @@ class Unpack:
         if(d > 1):
           d -= 1
           for j in range(d):
-            self.packets.append(time_taken)
+            self.timetakenarr.append(time_taken)
       
       if(i == n-1):
         if(temp != 0):
-          self.packets.append(time_taken)
+          self.timetakenarr.append(time_taken)
 
-    self.timearr = []
-    for i in range(0, len(self.packets)):
-      self.timearr.append(i)
+    timearr = []
+    for i in range(0, len(self.timetakenarr)):
+      timearr.append(i)
 
     # print(len(self.timearr))
 
   # Return the array
   def getarray(self):
-    return (self.packets,self.timearr)
+    return (self.timetakenarr,self.mul)
 
   def plot(self):
     # Now lets plot the graph
     plt.figure(figsize=(20,10))
-    plt.plot(self.timearr, self.packets)
+    plt.plot(self.timearr, self.timetakenarr)
     plt.xlabel('Data loaded(%)')
     plt.ylabel('No.of packets required for each chunk')
     plt.title('Video fingerprint for ' + self.pcapfilename)
@@ -97,8 +97,3 @@ class Unpack:
   
   def bitrateplot(self):
     pass
-
-
-
-
-      # if chunk-temp <= 0.1*mul*whole:
