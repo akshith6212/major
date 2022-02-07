@@ -3,10 +3,13 @@ import scapy
 from scapy.all import *
 from data import Unpack
 from pcap import *
+import matplotlib.pyplot as plt
 
 def main():
-  result0 = Unpack('pcap/capture_levitating-1.pcap')
-  result1 = Unpack('pcap/capture_stanford-0.pcap')
+  pcap0 = 'pcap/Bitcoin made simple - guardian.pcap'
+  pcap1 = 'pcap/capture_hui-1.pcap'
+  result0 = Unpack(pcap0)
+  result1 = Unpack(pcap1)
   arr0 = result0.getarray()
   arr1 = result1.getarray()
 
@@ -18,6 +21,7 @@ def main():
     arr0 = result1.getarray()
     arr1 = result0.getarray()
     n0,n1 = n1,n0
+    pcap0,pcap1 = pcap1,pcap0
 
   print(n0,n1)
 
@@ -28,7 +32,7 @@ def main():
   for i in range(n1):
     indices_s.append(int(i*n))
 
-  # store the sampled values in arr
+  # store the sampled values of arr0 in arr
   arr = []
 
   # sample the long sized array
@@ -121,6 +125,18 @@ def main():
 
   percentage_similarity = ((avg - diff)/avg)*100
 
+  timearr = []
+  for i in range(0, len(arr)):
+    timearr.append(i)
+
   print("Percentage similarity:", round(percentage_similarity, 2),"%")
+  plt.figure(figsize=(20,10))
+  plt.plot(timearr, arr, color='r', label=pcap0)
+  plt.plot(timearr, arr1, color='g', label=pcap1)
+  plt.xlabel('Packet sequence')
+  plt.ylabel('Length of each packet')
+  plt.title('Video fingerprint comparison')
+  plt.legend()
+  plt.show()
 
 main()

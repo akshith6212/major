@@ -37,7 +37,7 @@ class Unpack:
         ip_header_len = pkt.getlayer(IP).ihl * 32 / 8
         tcp_header_len = pkt.getlayer(TCP).dataofs * 32 / 8
         tcp_seg_len = ip_total_len - ip_header_len - tcp_header_len
-        self.arr.append(tcp_seg_len)
+        self.arr.append((tcp_seg_len,pkt.time))
       except:
         pass
     # print(len(self.arr))
@@ -52,29 +52,29 @@ class Unpack:
     self.packets = []
 
     temp = 0
-    cnt = 0
+    time_taken = 0
     n = len(self.arr)
     for i in range(n):
-      cnt += 1
+      time_taken += 1
       temp += self.arr[i]
       if temp-chunk > 0:
-        self.packets.append(cnt)
+        self.packets.append(time_taken)
         d = int(temp/chunk)
         
         temp -= d*chunk
         # if(temp != 0):
-        #   cnt = 1
+        #   time_taken = 1
         # else:
-        #   cnt = 0
+        #   time_taken = 0
 
         if(d > 1):
           d -= 1
           for j in range(d):
-            self.packets.append(cnt)
+            self.packets.append(time_taken)
       
       if(i == n-1):
         if(temp != 0):
-          self.packets.append(cnt)
+          self.packets.append(time_taken)
 
     self.timearr = []
     for i in range(0, len(self.packets)):
