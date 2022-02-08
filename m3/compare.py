@@ -1,29 +1,42 @@
 import math
 import scapy
 from scapy.all import *
-from data_m2 import Unpack
+from data_m3 import Unpack
 import matplotlib.pyplot as plt
 
 def main():
-  result0 = Unpack("pcap/capture_stanford-0.pcap")
-  (arr0,timearr0) = result0.getarray()
+  filename0 = "pcap/capture_stanford-0.pcap"
+  filename1 = "pcap/capture_stanford-1.pcap"
+  filename2 = "pcap/capture_levitating-0.pcap"
+  filename3 = "pcap/capture_levitating-1.pcap"
+  filename4 = "pcap/capture_hui-0.pcap"
+  filename5 = "pcap/capture_hui-1.pcap"
   
-  result1 = Unpack("pcap/capture_stanford-1.pcap")
-  (arr1,timearr1) = result1.getarray()
+  result0 = Unpack(filename0)
+  (arr0,mul,Cumulative) = result0.getarray()
+  # result0.plot()
 
-  result2 = Unpack("pcap/capture_levitating-0.pcap")
-  (arr2,timearr2) = result2.getarray()
-  
-  result3 = Unpack("pcap/capture_levitating-1.pcap")
-  (arr3,timearr3) = result3.getarray()
+  result1 = Unpack(filename1)
+  (arr1,mul,Cumulative) = result1.getarray()
+  # result1.plot()
 
-  result4 = Unpack("pcap/capture_hui-0.pcap")
-  (arr4,timearr4) = result4.getarray()
-  
-  result5 = Unpack("pcap/capture_hui-1.pcap")
-  (arr5,timearr5) = result5.getarray()
+  result2 = Unpack(filename2)
+  (arr2,mul,Cumulative) = result2.getarray()
+  # result2.plot()
 
-  d = 100
+  result3 = Unpack(filename3)
+  (arr3,mul,Cumulative) = result3.getarray()
+  # result3.plot()
+
+  result4 = Unpack(filename4)
+  (arr4,mul,Cumulative) = result4.getarray()
+  # result4.plot()
+
+  result5 = Unpack(filename5)
+  (arr5,mul,Cumulative) = result5.getarray()
+  # result5.plot()
+
+  d = int(1/mul)-1
   timearr = []
   for i in range(0, d):
     timearr.append(i)
@@ -35,14 +48,27 @@ def main():
   arr4 = arr4[:d]
   arr5 = arr5[:d]
 
-  plt.plot(timearr, arr0, color='r', label='stanford-0')
-  plt.plot(timearr, arr1, color='g', label='stanford-1')
-  plt.plot(timearr, arr2, color='b', label='levitating-0')
-  plt.plot(timearr, arr3, color='c', label='levitating-1')
-  plt.plot(timearr, arr4, color='m', label='hui-0')
-  plt.plot(timearr, arr5, color='y', label='hui-1')
+  n0 = len(arr0)
+  n1 = len(arr1)
+  n2 = len(arr2)
+  n3 = len(arr3)
+  n4 = len(arr4)
+  n5 = len(arr5)
+
+  print(n0,n1,n2,n3,n4,n5)
+
+  plt.figure(figsize=(20,10))
+  plt.plot(timearr, arr0, color='r', label=filename0)
+  plt.plot(timearr, arr1, color='g', label=filename1)
+  plt.plot(timearr, arr2, color='b', label=filename2)
+  plt.plot(timearr, arr3, color='c', label=filename3)
+  plt.plot(timearr, arr4, color='m', label=filename4)
+  plt.plot(timearr, arr5, color='y', label=filename5)
   plt.xlabel('Data loaded(%)')
-  plt.ylabel('No.of packets required for each chunk')
+  if(Cumulative):
+    plt.ylabel('Cumulative time taken for each chunk (seconds)')
+  else:
+    plt.ylabel('Time taken for each chunk (seconds)')
   plt.title('Video fingerprint comparison')
   plt.legend()
   plt.show()

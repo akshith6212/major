@@ -51,30 +51,68 @@ class Unpack:
     chunk = whole*self.mul
     self.timetakenarr = []
 
-    temp = 0
+    temp = self.arr[0][0]
     time_taken = 0
     n = len(self.arr)
-    for i in range(1,n):
-      time_taken += self.arr[i][1]-self.arr[i-1][1]
-      temp += self.arr[i][0]
-      if temp-chunk > 0:
-        self.timetakenarr.append(time_taken) 
-        d = int(temp/chunk)
+    self.Cumulative = 0
+    if(self.Cumulative):
+      for i in range(1,n):
+        if(i == 1):
+          if temp-chunk > 0:
+            self.timetakenarr.append(time_taken) 
+            d = int(temp/chunk)
+            
+            temp -= d*chunk
+            if(d > 1):
+              d -= 1
+              for j in range(d):
+                self.timetakenarr.append(time_taken)
+        time_taken += self.arr[i][1]-self.arr[i-1][1]
+        temp += self.arr[i][0]
+        if temp-chunk > 0:
+          self.timetakenarr.append(time_taken) 
+          d = int(temp/chunk)
+          
+          temp -= d*chunk
+          if(d > 1):
+            d -= 1
+            for j in range(d):
+              self.timetakenarr.append(time_taken)
         
-        temp -= d*chunk
-        # if(temp != 0):
-        #   time_taken = 1
-        # else:
-        #   time_taken = 0
-
-        if(d > 1):
-          d -= 1
-          for j in range(d):
+        if(i == n-1):
+          if(temp != 0):
             self.timetakenarr.append(time_taken)
-      
-      if(i == n-1):
-        if(temp != 0):
-          self.timetakenarr.append(time_taken)
+    else:
+      # Individual
+      for i in range(1,n):
+        if(i == 1):
+          if temp-chunk > 0:
+            self.timetakenarr.append(time_taken) 
+            d = int(temp/chunk)
+            
+            temp -= d*chunk
+            if(d > 1):
+              d -= 1
+              for j in range(d):
+                self.timetakenarr.append(time_taken)
+
+        time_taken += self.arr[i][1]-self.arr[i-1][1]
+        temp += self.arr[i][0]
+        if temp-chunk > 0:
+          self.timetakenarr.append(time_taken) 
+          d = int(temp/chunk)
+          
+          temp -= d*chunk
+          if(d > 1):
+            d -= 1
+            for j in range(d):
+              self.timetakenarr.append(time_taken)
+              
+          time_taken = 0 # regardless of the bit of chunk in temp
+        
+        if(i == n-1):
+          if(temp != 0):
+            self.timetakenarr.append(time_taken)
 
     timearr = []
     for i in range(0, len(self.timetakenarr)):
@@ -84,16 +122,7 @@ class Unpack:
 
   # Return the array
   def getarray(self):
-    return (self.timetakenarr,self.mul)
-
-  def plot(self):
-    # Now lets plot the graph
-    plt.figure(figsize=(20,10))
-    plt.plot(self.timearr, self.timetakenarr)
-    plt.xlabel('Data loaded(%)')
-    plt.ylabel('No.of packets required for each chunk')
-    plt.title('Video fingerprint for ' + self.pcapfilename)
-    plt.show()
+    return (self.timetakenarr,self.mul,self.Cumulative)
   
   def bitrateplot(self):
     pass

@@ -46,35 +46,55 @@ class Unpack:
     for i in self.arr:
       whole += i
 
-    mul = 0.01
+    self.mul = 0.01
 
-    chunk = whole*mul
+    chunk = whole*self.mul
     self.packets = []
 
     temp = 0
     cnt = 0
     n = len(self.arr)
-    for i in range(n):
-      cnt += 1
-      temp += self.arr[i]
-      if temp-chunk > 0:
-        self.packets.append(cnt)
-        d = int(temp/chunk)
-        
-        temp -= d*chunk
-        # if(temp != 0):
-        #   cnt = 1
-        # else:
-        #   cnt = 0
-
-        if(d > 1):
-          d -= 1
-          for j in range(d):
-            self.packets.append(cnt)
-      
-      if(i == n-1):
-        if(temp != 0):
+    self.Cumulative = 0
+    if(self.Cumulative):
+      for i in range(n):
+        cnt += 1
+        temp += self.arr[i]
+        if temp-chunk > 0:
           self.packets.append(cnt)
+          d = int(temp/chunk)
+          
+          temp -= d*chunk
+          if(d > 1):
+            d -= 1
+            for j in range(d):
+              self.packets.append(cnt)
+        
+        if(i == n-1):
+          if(temp != 0):
+            self.packets.append(cnt)
+    else:
+      for i in range(n):
+        cnt += 1
+        temp += self.arr[i]
+        if temp-chunk > 0:
+          self.packets.append(cnt)
+          d = int(temp/chunk)
+          
+          temp -= d*chunk
+          if(temp != 0):
+            cnt = 1
+          else:
+            cnt = 0
+
+          if(d > 1):
+            d -= 1
+            for j in range(d):
+              self.packets.append(1)
+        
+        if(i == n-1):
+          if(temp != 0):
+            self.packets.append(cnt)
+
 
     self.timearr = []
     for i in range(0, len(self.packets)):
@@ -84,21 +104,7 @@ class Unpack:
 
   # Return the array
   def getarray(self):
-    return (self.packets,self.timearr)
-
-  def plot(self):
-    # Now lets plot the graph
-    plt.figure(figsize=(20,10))
-    plt.plot(self.timearr, self.packets)
-    plt.xlabel('Data loaded(%)')
-    plt.ylabel('No.of packets required for each chunk')
-    plt.title('Video fingerprint for ' + self.pcapfilename)
-    plt.show()
+    return (self.packets,self.mul,self.Cumulative)
   
   def bitrateplot(self):
     pass
-
-
-
-
-      # if chunk-temp <= 0.1*mul*whole:
