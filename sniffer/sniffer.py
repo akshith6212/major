@@ -1,4 +1,5 @@
 import socket
+import time 
 from general import *
 from networking.ethernet import Ethernet
 from networking.ipv4 import IPv4
@@ -7,7 +8,9 @@ from networking.pcap import Pcap
 from networking.http import HTTP
 
 def main():
-  pcap = Pcap('capture.pcap')
+  timestr = time.strftime("%d-%H%M") 
+  filename = 'capture_' + timestr + '.pcap'
+  pcap = Pcap(filename)
   conn = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(3))
 
   while True:
