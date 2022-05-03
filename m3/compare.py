@@ -5,12 +5,12 @@ from data_m3 import Unpack
 import matplotlib.pyplot as plt
 
 def main():
-  filename0 = "pcap/capture_stanford-0.pcap"
-  filename1 = "pcap/capture_stanford-1.pcap"
-  filename2 = "pcap/capture_levitating-0.pcap"
-  filename3 = "pcap/capture_levitating-1.pcap"
-  filename4 = "pcap/capture_hui-0.pcap"
-  filename5 = "pcap/capture_hui-1.pcap"
+  filename0 = "../m4-hybrid/pcap/test/capture_29-2239-insane.pcap"
+  filename1 = "../m4-hybrid/pcap/test/capture_29-2244-insane.pcap"
+  filename2 = "../m4-hybrid/pcap/test/tony-peter_480_1.pcap"
+  filename3 = "../m4-hybrid/pcap/test/tony-peter_480_2.pcap"
+  filename4 = "../m4-hybrid/pcap/test/capture_30-2105_RRR.pcap"
+  filename5 = "../m4-hybrid/pcap/test/capture_30-2109_RRR.pcap"
   
   result0 = Unpack(filename0)
   (arr0,mul,Cumulative) = result0.getarray()
@@ -57,19 +57,39 @@ def main():
 
   print(n0,n1,n2,n3,n4,n5)
 
-  plt.figure(figsize=(20,10))
-  plt.plot(timearr, arr0, color='r', label=filename0)
-  plt.plot(timearr, arr1, color='g', label=filename1)
-  plt.plot(timearr, arr2, color='b', label=filename2)
-  plt.plot(timearr, arr3, color='c', label=filename3)
-  plt.plot(timearr, arr4, color='m', label=filename4)
-  plt.plot(timearr, arr5, color='y', label=filename5)
-  plt.xlabel('Data loaded(%)')
-  if(Cumulative):
-    plt.ylabel('Cumulative time taken for each chunk (seconds)')
-  else:
-    plt.ylabel('Time taken for each chunk (seconds)')
-  plt.title('Video fingerprint comparison')
-  plt.legend()
+  # plt.figure(figsize=(20,10))
+  # plt.plot(timearr, arr0, color='r', label=filename0)
+  # plt.plot(timearr, arr1, color='g', label=filename1)
+  # plt.plot(timearr, arr2, color='b', label=filename2)
+  # plt.plot(timearr, arr3, color='c', label=filename3)
+  # plt.plot(timearr, arr4, color='m', label=filename4)
+  # plt.plot(timearr, arr5, color='y', label=filename5)
+  # plt.xlabel('Data loaded(%)')
+  # if(Cumulative):
+  #   plt.ylabel('Cumulative time taken for each chunk (seconds)')
+  # else:
+  #   plt.ylabel('Time taken for each chunk (seconds)')
+  # plt.title('Video fingerprint comparison')
+  # plt.legend()
+  # plt.show()
+
+  fig, axs = plt.subplots(4, sharex=True, sharey=True, figsize=(20,10))
+  fig.add_subplot(111, frameon=False)
+  plt.tick_params(labelcolor='none', which='both', top=False, bottom=True, left=False, right=False)
+  axs[0].plot(timearr, arr0, color='r', label=filename0)
+  axs[1].plot(timearr, arr1, color='g', label=filename1)
+  axs[2].plot(timearr, arr2, color='b', label=filename2)
+  axs[3].plot(timearr, arr3, color='y', label=filename3)
+  axs[4].plot(timearr, arr4, color='y', label=filename4)
+  axs[5].plot(timearr, arr5, color='y', label=filename5)
+  axs[0].legend()
+  axs[1].legend()
+  axs[2].legend()
+  axs[3].legend()
+  axs[4].legend()
+  axs[5].legend()
+  plt.title('Video fingerprint for '+filename0+" , "+filename1+" , "+filename2+" , "+filename3+" , "+filename4+" , "+filename5)
+  plt.xlabel('Chunk sequence')
+  plt.ylabel('No.of packets required for each chunk')
   plt.show()
 main()

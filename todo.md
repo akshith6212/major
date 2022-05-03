@@ -1,0 +1,1 @@
+Increase font size in pictures in 9th slide.

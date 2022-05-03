@@ -2,7 +2,7 @@ import scapy
 from scapy.all import *
 
 class Unpack:
-  def __init__(self, filename):
+  def __init__(self, filename, Cumulative):
     self.pcapfilename = filename
     # Read the pcap file
     cap = rdpcap(filename)
@@ -54,8 +54,7 @@ class Unpack:
     temp = 0
     cnt = 0
     n = len(self.arr)
-    self.Cumulative = 0
-    if(self.Cumulative):
+    if(Cumulative):
       for i in range(n):
         cnt += 1
         temp += self.arr[i]
@@ -104,7 +103,7 @@ class Unpack:
 
   # Return the array
   def getarray(self):
-    return (self.packets,self.mul,self.Cumulative)
+    return (self.packets,self.mul)
   
   def bitrateplot(self):
     pass

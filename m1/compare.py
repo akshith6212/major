@@ -2,26 +2,35 @@ import math
 import scapy
 from scapy.all import *
 from data import Unpack
+from data_m import Unpack as UnpackP
 from pcap import *
 import matplotlib.pyplot as plt
 
 def main():
-  pcap0 = 'pcap/Bitcoin made simple - guardian.pcap'
-  pcap1 = 'pcap/capture_hui-1.pcap'
-  result0 = Unpack(pcap0)
-  result1 = Unpack(pcap1)
+  filename0 = "../m4-hybrid/pcap_test_campus/kolla-my/insane/capture_29-2239-insane.pcap"
+  # filename0 = "pcap/NFT in 3min-1.pcap"
+  filename1 = "../m4-hybrid/pcap_test_campus/kolla-my/insane/capture_29-2244-insane.pcap"
+
+  print("Comparing ",filename0, filename1)
+  
+  result0 = Unpack(filename0)
+  result1 = UnpackP(filename0)
+
   arr0 = result0.getarray()
-  arr1 = result1.getarray()
+  (arr1,packets1,mul) = result1.getarray()
+
+  arr1 = packets1[:]
 
   n0 = len(arr0)
   n1 = len(arr1)
 
   # swap arrays
   if(n0 < n1):
-    arr0 = result1.getarray()
+    (arr0,packets0,mul) = result1.getarray()
     arr1 = result0.getarray()
+    arr0 = packets0[:]
     n0,n1 = n1,n0
-    pcap0,pcap1 = pcap1,pcap0
+    filename0,filename1 = filename1,filename0
 
   print(n0,n1)
 
@@ -130,13 +139,27 @@ def main():
     timearr.append(i)
 
   print("Percentage similarity:", round(percentage_similarity, 2),"%")
-  plt.figure(figsize=(20,10))
-  plt.plot(timearr, arr, color='r', label=pcap0)
-  plt.plot(timearr, arr1, color='g', label=pcap1)
-  plt.xlabel('Packet sequence')
-  plt.ylabel('Length of each packet')
-  plt.title('Video fingerprint comparison')
-  plt.legend()
+  # plt.figure(figsize=(20,10))
+  # plt.plot(timearr, arr, color='r', label=filename0)
+  # plt.plot(timearr, arr1, color='g', label=filename1)
+  # plt.xlabel('Packet sequence')
+  # plt.ylabel('Length of each packet')
+  # plt.title('Video fingerprint for '+filename0+" , "+filename1)
+  # plt.legend()
+  # plt.show()
+  # Set general font size
+  plt.rcParams['font.size'] = '13'
+  fig, axs = plt.subplots(2, sharey=True, figsize=(10,5))
+  fig.add_subplot(111, frameon=False)
+  plt.tick_params(labelcolor='none', which='both', labelsize=25, top=False, bottom=False, left=False, right=False)
+  axs[0].plot(timearr, arr, color='r', label=filename0)
+  axs[1].plot(timearr, arr1, color='g', label=filename1)
+  axs[0].legend(prop={"size":16})
+  axs[1].legend(prop={"size":16})
+  plt.title('Video fingerprint for '+filename0[45:]+" , "+filename1[45:], fontsize = 16)
+  axs[0].set_xlabel('Packet sequence', fontsize = 16)
+  axs[1].set_xlabel('Packet sequence', fontsize = 16)
+  plt.ylabel('Length of each packet', fontsize = 16)
   plt.show()
 
 main()
